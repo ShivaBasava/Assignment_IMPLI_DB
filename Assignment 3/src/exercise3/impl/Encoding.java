@@ -1,6 +1,7 @@
-//-----
-// Briefly explained under each method
-//-----
+/**
+ * Briefly explained, under each method
+ * - 3.1 a, b, c, d, e
+ */
 package exercise3.impl;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class Encoding {
         for (int i = 1; i < numbers.length; i++) {
             //  calculating the difference from its predecessor
             //    and storing it in "encoded['array index']".
-            encoded[i] = numbers[i] - numbers[i-1];
+            encoded[i] = numbers[i] - numbers[i - 1];
         }
 
         // -Finally, returning the encoded array
@@ -61,7 +62,7 @@ public class Encoding {
 
             // -adding the current encoded value (which is a difference)
             //      to the previous decoded value.
-            decoded[i] = decoded[i-1] + numbers[i];
+            decoded[i] = decoded[i - 1] + numbers[i];
         }
 
         // -Finally, returning the decoded array
@@ -103,7 +104,7 @@ public class Encoding {
         while (true) {
 
             // -now, adding the least significant 7 bits of n as a byte
-            bytes.add(0, (byte)(n % 128));
+            bytes.add(0, (byte) (n % 128));
 
             // -If "n" is less than 128, break the loop as encoding is complete
             if (n < 128) break;
@@ -113,7 +114,7 @@ public class Encoding {
         }
 
         // -Marked the last byte by setting its high-order bit to 1
-        bytes.set(bytes.size() - 1, (byte)(bytes.get(bytes.size() - 1) + 128));
+        bytes.set(bytes.size() - 1, (byte) (bytes.get(bytes.size() - 1) + 128));
 
         // -returning the list of encoded bytes,
         //   for the invoked number
@@ -154,6 +155,36 @@ public class Encoding {
         return numbers.stream().mapToInt(Integer::intValue).toArray();
     }
 
+    /**
+     * 3.1 e)
+     * Main method to demonstrate encoding and decoding.
+     *
+     * Expected Output:-
+     *
+     * Original sequence:
+     * 1 7 56 134 256 268 384 472 512 648
+     * Its size: 40 bytes
+     *
+     * i) Differential Encoding:
+     * 1 6 49 78 122 12 116 88 40 136
+     * Its size: 40 bytes
+     *
+     * ii) VB compression:
+     * 129 135 184 1 134 2 128 2 140 3 128 3 216 4 128 5 136
+     * Its size: 17 bytes
+     *
+     * iii) Differential Encoding + VB compression:
+     * 129 134 177 206 250 140 244 216 168 1 136
+     * its size: 11 bytes
+     *
+     * Results Overview for the implemented methods as follows :-
+     *
+     * i) Differential Encoding helps reduce the range of values but does not compress data size.
+     * ii) VB Compression reduces data size by using fewer bytes for smaller numbers.
+     * iii) Combined Encoding leverages both techniques to achieve maximum compression by :
+     * - first reducing value magnitudes
+     * - then applying efficient byte-level compression
+     */
     public static void main(String[] args) {
 
         int[] seq = {1, 7, 56, 134, 256, 268, 384, 472, 512, 648};
@@ -162,9 +193,12 @@ public class Encoding {
         for (int num : seq) {
             System.out.print(num + " ");
         }
+
+        //(10 integers * 4 bytes each)
         System.out.println("\nOriginal size: " + (seq.length * 4) + " bytes");
 
-        // i. Differential Encoding
+
+        // 3.1 e) i. Differential Encoding
         int[] diffEncoded = encodeDiff(seq);
         System.out.println("\ni) Differential Encoding:");
         for (int num : diffEncoded) {
@@ -172,7 +206,8 @@ public class Encoding {
         }
         System.out.println("\nIts size: " + (diffEncoded.length * 4) + " bytes");
 
-        // ii. VB compression
+
+        // 3.1 e) ii. VB compression
         byte[] vbEncoded = encodeVB(seq);
         System.out.println("\nii) VB compression:");
         for (byte b : vbEncoded) {
@@ -180,7 +215,8 @@ public class Encoding {
         }
         System.out.println("\nIts size: " + vbEncoded.length + " bytes");
 
-        // iii. Differential Encoding and subsequent VB compression
+
+        // 3.1 e) iii. Differential Encoding and subsequent VB compression
         byte[] diffVbEncoded = encodeVB(diffEncoded);
         System.out.println("\niii) Differential & subsequent VB compression:");
         for (byte b : diffVbEncoded) {
